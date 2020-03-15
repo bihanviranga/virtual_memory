@@ -7,5 +7,5 @@ There are 3 files. They are meant to demonstrate how a string in a file can be c
 
 `print_str_addr_loop.c` is the same example, looped forever. While this program is running, the Python script will attempt to change the string in heap.
 
-`replace_string_in_heap.py` is the script that, given a PID, find a string in the heap and replaces it with a given string.
+`replace_string_in_heap.py` is the script that, given a PID, finds a string in the heap and replaces it with a given string.
 
