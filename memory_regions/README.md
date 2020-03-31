@@ -14,9 +14,16 @@ Extension of above. Gets the address of the main function.
 
 Bytes of the main function obtained with `objdump -M intel -j .text -d main-2 | grep '<main>:' -A 5 > objdump_output.txt`
 
+### main-3.c
+Extension of above. Prints the first few bytes of the main function to compare it against the objdump output produced previously.
+
 ## Compilation
 
-Compile with `gcc -Wall -Wextra -pedantic -Werror main-0.c -o main-0`
+### main-0.c main-1.c
+`gcc -Wall -Wextra -pedantic -Werror main-0.c -o main-0`
+
+### main-2.c main-3.c
+`gcc -Wall -Wextra -pedantic -Werror main-2.c -o main-2`
 
 ## Environment
 
