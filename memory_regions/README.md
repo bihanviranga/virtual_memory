@@ -8,6 +8,10 @@ Gets the address of a variable `a` to determine the general memory region of the
 ### main-1.c
 Extension of above. Gets the address of a memory location reserved with `malloc`.
 
+### main-2.c
+Extension of above. Gets the address of the main function.
+**Compile this without the `-pedantic` flag.**
+
 ## Compilation
 
 Compile with `gcc -Wall -Wextra -pedantic -Werror main-0.c -o main-0`
