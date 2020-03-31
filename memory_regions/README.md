@@ -5,6 +5,8 @@
 ### main-0.c
 Gets the address of a variable `a` to determine the general memory region of the stack.
 
+### main-1.c
+Extension of above. Gets the address of a memory location reserved with `malloc`.
 
 ## Compilation
 
