@@ -1,0 +1,6 @@
+0000000000001169 <main>:
+    1169:	55                   	push   rbp
+    116a:	48 89 e5             	mov    rbp,rsp
+    116d:	48 83 ec 20          	sub    rsp,0x20
+    1171:	64 48 8b 04 25 28 00 	mov    rax,QWORD PTR fs:0x28
+    1178:	00 00 
