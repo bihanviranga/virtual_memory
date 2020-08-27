@@ -1,5 +1,24 @@
 # C Memory Allocator
 
+##  Compilation
+
+`$ gcc -o memalloc.so -fPIC -shared main.c`
+
+## Testing
+
+Load the library
+`export LD_PRELOAD=/path/to/memalloc.so`
+
+Now, any command in the shell that needs malloc will be using our malloc.
+
+## TODO
+- Use best-fit when allocating memory blocks.
+- Make realloc free memory when size is 0, as in the original realloc().
+- Add some driver code.
+- Add debug statements for testing.
+
+## Notes
+
 The end of the heap is marked by a pointer called the program break, or **brk**. `sbrk()` allows changing the location of program break.
 
 In order to free memory, we have to know the size of the memory 'block' that is allocated by our custom malloc. The idea is, we will add a header to every block of memory allocated, and that header will contain the size of this block.
