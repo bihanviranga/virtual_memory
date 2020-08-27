@@ -60,6 +60,8 @@ void *malloc(size_t size) {
 	}
 
 	/* Since this is a new block, s.next is NULL */
+	/* Because block is a void*, we don't have to cast
+	 * i.e header = (header_t *)block; is not needed. */	
 	header = block;
 	header->s.size = size;
 	header->s.is_free = 0;
@@ -89,5 +91,53 @@ header_t *get_free_block(size_t size) {
 		curr = curr->s.next;
 	}
 	return NULL;
+}
+
+void free(void *block) {
+	header_t *header, *tmp;
+	void *program_break;
+
+	if (!block) {
+		return;
+	}
+
+	pthread_mutex_lock(&global_malloc_lock);
+	/* Cast the block to a header_t and move it behind 
+	 * by 1 unit. Because of the cast, size of 1 unit is 
+	 * the size of a header_t, which gives us our header. */
+	header = (header_t *)block - 1;
+
+	program_break = sbrk(0);
+
+	/* Determine if we are at the end of the heap. */
+	/* The reasons for the (char*) cast:
+	 * header->s.size is in bytes.
+	 * Arithmetic on void* is illegal. */
+	if ((char*)block + header->s.size == program_break) {
+		/* Only 1 block in linked list */
+		if (head == tail) {
+			head = tail = NULL;
+		} else {
+			tmp = head;
+			while (tmp) {
+				if (tmp->s.next == tail) {
+					/* Since we are at the end of the heap */
+					tmp->s.next = NULL;
+					tail = tmp;
+				}
+				tmp = tmp->s.next;
+			}
+		}
+		/* Release the memory back to the OS by shrinking
+		 * the size of available heap memory */
+		sbrk(0 - sizeof(header_t) - header->s.size);
+		pthread_mutex_unlock(&global_malloc_lock);
+		return;
+	}
+
+	/* If we are not at the end of the heap,
+	 * just mark it as free. */
+	header->s.is_free = 1;
+	pthread_mutex_unlock(&global_malloc_lock);
 }
 
