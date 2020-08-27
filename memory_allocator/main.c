@@ -82,6 +82,7 @@ void *malloc(size_t size) {
 /*
  * Returns a previously freed block of memory.
  * Returns null if no such blocks are available.
+ * TODO: Implement this as best-fit, not first-fit.
  */
 header_t *get_free_block(size_t size) {
 	header_t *curr = head;
@@ -175,5 +176,33 @@ void *calloc(size_t num, size_t nsize) {
 
 	memset(block, 0, size);
 	return block;
+}
+
+/*
+ * TODO: Change implementation to free memory
+ * when size is 0, like in the original realloc().
+ */
+void *realloc(void* block, size_t size) {
+	header_t *header;
+	void *ret;
+
+	if (!block || !size) {
+		return malloc(size);
+	}
+
+	/* Get header from block */
+	header = (header_t *)block - 1;
+
+	if (header->s.size >= size) {
+		return block;
+	}
+
+	ret = malloc(size);
+	if (ret) {
+		memcpy(ret, block, header->s.size);
+		free(block);
+	}
+
+	return ret;
 }
 
