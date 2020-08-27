@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <string.h>
 
 /*
  * Every allocated block of memory has a header that
@@ -93,6 +94,12 @@ header_t *get_free_block(size_t size) {
 	return NULL;
 }
 
+/*
+ * Frees a memory block allocated with custom malloc() above.
+ * If the block is at the end of the heap, the memory is
+ * released to the OS.
+ * Otherwise the block is marked as free for reallocation by malloc.
+ */
 void free(void *block) {
 	header_t *header, *tmp;
 	void *program_break;
@@ -139,5 +146,34 @@ void free(void *block) {
 	 * just mark it as free. */
 	header->s.is_free = 1;
 	pthread_mutex_unlock(&global_malloc_lock);
+}
+
+/*
+ * Allocates memory for an array of num size, with each member being
+ * nsize bytes large.
+ * Returns a pointer to the allocated memory.
+ * Returns NULL if allocation failed.
+ */
+void *calloc(size_t num, size_t nsize) {
+	size_t size;
+	void *block;
+
+	if (!num || !nsize) {
+		return NULL;
+	}
+
+	size = num * nsize;
+	/* Check if the multiplication overflowed. */
+	if (nsize != size / num) {
+		return NULL;
+	}
+
+	block = malloc(size);
+	if (!block) {
+		return NULL;
+	}
+
+	memset(block, 0, size);
+	return block;
 }
 
